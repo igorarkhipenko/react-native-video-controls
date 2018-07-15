@@ -423,22 +423,7 @@ export default class VideoPlayer extends Component {
      * isFullscreen state.
      */
     _toggleFullscreen() {
-        let state = this.state;
-
-        state.isFullscreen = ! state.isFullscreen;
-
-        if (this.props.toggleResizeModeOnFullscreen) {
-            state.resizeMode = state.isFullscreen === true ? 'cover' : 'contain';
-        }
-
-        if (state.isFullscreen) {
-            typeof this.events.onEnterFullscreen === 'function' && this.events.onEnterFullscreen();
-        }
-        else {
-            typeof this.events.onExitFullscreen === 'function' && this.events.onExitFullscreen();
-        }
-
-        this.setState( state );
+        this.player.ref.presentFullscreenPlayer();
     }
 
     /**
@@ -665,21 +650,22 @@ export default class VideoPlayer extends Component {
     /**
      * Before mounting, init our seekbar and volume bar
      * pan responders.
+     * Note: disabled because of pan handlers for tab swiping.
      */
     componentWillMount() {
-        this.initSeekPanResponder();
-        this.initVolumePanResponder();
+        // this.initSeekPanResponder();
+        // this.initVolumePanResponder();
     }
 
     /**
      * To allow basic playback management from the outside
      * we have to handle possible props changes to state changes
      */
-    componentWillReceiveProps(nextProps) {
-        if (this.state.paused !== nextProps.paused ) {
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.paused !== prevState.paused ) {
             this.setState({
-                paused: nextProps.paused
-            })
+                paused: this.state.paused
+            });
         }
     }
 
