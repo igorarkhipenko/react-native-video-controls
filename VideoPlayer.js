@@ -251,18 +251,7 @@ export default class VideoPlayer extends Component {
      * fullscreen mode.
      */
     _onScreenTouch() {
-        let state = this.state;
-        const time = new Date().getTime();
-        const delta =  time - state.lastScreenPress;
-
-        if ( delta < 300 ) {
-            this.methods.toggleFullscreen();
-        }
-
-        this.methods.toggleControls();
-        state.lastScreenPress = time;
-
-        this.setState( state );
+        this.setState({ paused: !this.state.paused });
     }
 
 
@@ -285,16 +274,12 @@ export default class VideoPlayer extends Component {
      * Default is 15s
      */
     setControlTimeout() {
-        this.player.controlTimeout = setTimeout( ()=> {
-            this._hideControls();
-        }, this.player.controlTimeoutDelay );
     }
 
     /**
      * Clear the hide controls timeout.
      */
     clearControlTimeout() {
-        clearTimeout( this.player.controlTimeout );
     }
 
     /**
@@ -1114,6 +1099,7 @@ export default class VideoPlayer extends Component {
                         source={ this.props.source }
                     />
                     { this.renderError() }
+                    { this.state.paused && !this.state.loading && this.props.renderPlayIcon() }
                     { this.renderTopControls() }
                     { this.renderLoader() }
                     { this.renderBottomControls() }
